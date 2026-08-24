@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mascotas Perdidas y Encontradas - La Virginia, Risaralda</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#fff1f2',
+                            100: '#ffe4e6',
+                            500: '#f43f5e',
+                            600: '#e11d48',
+                            700: '#be123c',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
+        .modal-backdrop { background-color: rgba(15, 23, 42, 0.75); backdrop-filter: blur(4px); }
+        .badge-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .6; } }
+        @media print {
+            body * { visibility: hidden; }
+            #printableFlyer, #printableFlyer * { visibility: visible; }
+            #printableFlyer { position: absolute; left: 0; top: 0; width: 100%; }
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col justify-between">
+
+    <div>
+        <!-- Top Emergency Header -->
+        <header class="bg-gradient-to-r from-red-600 via-rose-600 to-amber-600 text-white shadow-lg sticky top-0 z-40">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col md:flex-row items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                    <div class="bg-white/20 p-2.5 rounded-2xl backdrop-blur-sm shrink-0">
+                        <i class="fa-solid font-bold fa-paw text-2xl text-amber-300"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-extrabold text-xl sm:text-2xl leading-tight tracking-tight flex items-center gap-2">
+                            Mascotas La Virginia <span class="text-xs bg-amber-400 text-slate-900 font-bold px-2.5 py-0.5 rounded-full uppercase">S.O.S Sismo</span>
+                        </h1>
+                        <p class="text-xs sm:text-sm text-rose-100 font-medium">Red Comunitaria de Reencuentro Animal - Risaralda</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-2 w-full md:w-auto justify-end">
+                    <!-- Admin Status Indicator / Login Trigger -->
+                    <div id="adminHeaderBtnContainer">
+                        <button onclick="openAdminModal()" class="bg-slate-900/60 hover:bg-slate-900 text-white font-bold px-3 py-2 rounded-xl text-xs flex items-center gap-1.5 backdrop-blur-sm border border-white/20 transition-all">
+                            <i class="fa-solid fa-user-shield text-amber-400"></i>
+                            <span>Acceso Admin</span>
+                        </button>
+                    </div>
+
+                    <button onclick="openFormModal()" class="w-full sm:w-auto bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold px-5 py-2.5 rounded-xl shadow-lg hover:shadow-amber-400/20 transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-plus-circle text-lg"></i>
+                        <span>Publicar Mascota</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Emergency Announcement Alert -->
+        <div class="bg-amber-500/10 border-b border-amber-500/20 py-2.5 px-4 text-center">
+            <div class="max-w-7xl mx-auto flex items-center justify-center gap-2 text-xs sm:text-sm font-semibold text-amber-900">
+                <i class="fa-solid fa-triangle-exclamation text-amber-600 animate-bounce"></i>
+                <span>Atención La Virginia: Si perdiste o encontraste una mascota tras la emergencia, publícala de inmediato. Es gratuito y obligatorio incluir teléfono de contacto.</span>
+            </div>
+        </div>
+
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+            <!-- Stats Bar -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+                <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-red-100 text-red-600 flex items-center justify-center text-lg font-bold shrink-0">
+                        <i class="fa-solid fa-magnifying-glass font-bold"></i>
+                    </div>
+                    <div>
+                        <div id="statPerdidos" class="text-xl font-extrabold text-slate-900">0</div>
+                        <div class="text-xs text-slate-500 font-medium">Buscando Hogar</div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center text-lg font-bold shrink-0">
+                        <i class="fa-solid fa-hand-holding-heart"></i>
+                    </div>
+                    <div>
+                        <div id="statEncontrados" class="text-xl font-extrabold text-slate-900">0</div>
+                        <div class="text-xs text-slate-500 font-medium">Rescatados / Refugio</div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-lg font-bold shrink-0">
+                        <i class="fa-solid fa-heart-circle-check"></i>
+                    </div>
+                    <div>
+                        <div id="statReunidos" class="text-xl font-extrabold text-slate-900">0</div>
+                        <div class="text-xs text-slate-500 font-medium">Reunidos con Familia</div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-lg font-bold shrink-0">
+                        <i class="fa-solid fa-location-dot"></i>
+                    </div>
+                    <div>
+                        <div class="text-xl font-extrabold text-slate-900">La Virginia</div>
+                        <div class="text-xs text-slate-500 font-medium">Cobertura Municipal</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters Section -->
+            <section class="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200/80 space-y-4">
+                <div class="flex flex-col lg:flex-row gap-3 items-stretch lg:items-center justify-between">
+                    <!-- Search Input -->
+                    <div class="relative flex-1">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="text" id="searchInput" oninput="filterPets()" placeholder="Buscar por nombre de mascota, dueño, dirección o barrio..." class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500 text-sm">
+                    </div>
+
+                    <!-- Category & Status Filters -->
+                    <div class="flex flex-wrap sm:flex-nowrap gap-2">
+                        <select id="statusFilter" onchange="filterPets()" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-medium focus:ring-2 focus:ring-rose-500 focus:outline-none">
+                            <option value="ALL">Todos los estados</option>
+                            <option value="PERDIDO">🔴 Busca su dueño (Perdido)</option>
+                            <option value="ENCONTRADO">🟡 Encontrado (En custodia)</option>
+                            <option value="REUNIDO">🟢 Reunido con su familia</option>
+                        </select>
+
+                        <select id="typeFilter" onchange="filterPets()" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-medium focus:ring-2 focus:ring-rose-500 focus:outline-none">
+                            <option value="ALL">Todas las especies</option>
+                            <option value="Perro">🐶 Perros</option>
+                            <option value="Gato">🐱 Gatos</option>
+                            <option value="Otro">🐾 Otros animales</option>
+                        </select>
+
+                        <select id="neighborhoodFilter" onchange="filterPets()" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-medium focus:ring-2 focus:ring-rose-500 focus:outline-none max-w-[200px]">
+                            <option value="ALL">Todos los barrios</option>
+                            <option value="Alfonso López">Alfonso López</option>
+                            <option value="Bairon Gaviria">Bairon Gaviria</option>
+                            <option value="Balsillas">Balsillas</option>
+                            <option value="Bavaria">Bavaria</option>
+                            <option value="Buenos Aires">Buenos Aires</option>
+                            <option value="El Ciprés">El Ciprés</option>
+                            <option value="El Edén">El Edén</option>
+                            <option value="El Jardín">El Jardín</option>
+                            <option value="El Prado">El Prado</option>
+                            <option value="El Progreso">El Progreso</option>
+                            <option value="Expansión Norte">Expansión Norte</option>
+                            <option value="La Magdalena">La Magdalena</option>
+                            <option value="La Milagrosa">La Milagrosa</option>
+                            <option value="La Playa">La Playa</option>
+                            <option value="Las Américas">Las Américas</option>
+                            <option value="Los Almendros">Los Almendros</option>
+                            <option value="Los Gavilanes">Los Gavilanes</option>
+                            <option value="Los Libertadores">Los Libertadores</option>
+                            <option value="Luis Carlos Galán">Luis Carlos Galán</option>
+                            <option value="Obrero">Obrero</option>
+                            <option value="Pedro Pablo Bello">Pedro Pablo Bello</option>
+                            <option value="Pío XII">Pío XII</option>
+                            <option value="Portobelo">Portobelo</option>
+                            <option value="Restrepo">Restrepo</option>
+                            <option value="San Antonio">San Antonio</option>
+                            <option value="San Carlos">San Carlos</option>
+                            <option value="San Cayetano">San Cayetano</option>
+                            <option value="San Fernando">San Fernando</option>
+                            <option value="Santa Fe">Santa Fe</option>
+                            <option value="Siete de Enero">Siete de Enero</option>
+                            <option value="Sigifredo Zuleta">Sigifredo Zuleta</option>
+                            <option value="Tangarife I">Tangarife I</option>
+                            <option value="Tangarife II">Tangarife II</option>
+                            <option value="Zona Central">Zona Central / Centro</option>
+                            <option value="Otro Barrio">Otro sector / Vereda</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Pets Grid -->
+            <section>
+                <div id="petsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                    <!-- Dynamic cards will be rendered here -->
+                </div>
+
+                <!-- Empty state -->
+                <div id="emptyState" class="hidden text-center py-16 bg-white rounded-2xl border border-dashed border-slate-300">
+                    <div class="w-16 h-16 bg-rose-50 text-rose-500 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl">
+                        <i class="fa-solid fa-shield-cat"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-800">No se encontraron registros</h3>
+                    <p class="text-slate-500 text-sm max-w-md mx-auto mt-1 mb-4">No hay mascotas publicadas que coincidan con los filtros seleccionados.</p>
+                    <button onclick="resetFilters()" class="text-rose-600 hover:text-rose-700 text-sm font-bold underline">Restablecer filtros</button>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Modal: Formulario para publicar mascota -->
+    <div id="formModal" class="fixed inset-0 z-50 hidden modal-backdrop overflow-y-auto p-4 flex items-center justify-center">
+        <div class="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl relative my-8 border border-slate-100">
+            <!-- Close Button -->
+            <button onclick="closeFormModal()" class="absolute right-5 top-5 text-slate-400 hover:text-slate-600 w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center transition-colors">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <!-- Modal Header -->
+            <div class="mb-6">
+                <div class="inline-flex items-center gap-2 text-rose-600 text-xs font-bold uppercase tracking-wider bg-rose-50 px-3 py-1 rounded-full mb-2">
+                    <i class="fa-solid fa-triangle-exclamation"></i> Registro de emergencia
+                </div>
+                <h2 class="text-2xl font-black text-slate-900">Publicar Mascota Perdida o Encontrada</h2>
+                <p class="text-slate-500 text-sm mt-1">Por favor ingresa los datos completos para coordinar la entrega en La Virginia.</p>
+            </div>
+
+            <!-- Form -->
+            <form id="petForm" onsubmit="handlePetSubmit(event)" class="space-y-4">
+                
+                <!-- Status & Species -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Estado de la publicación *</label>
+                        <select id="inputStatus" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-rose-500 focus:outline-none font-medium">
+                            <option value="PERDIDO">🔴 PERDIDO (Busco a mi mascota)</option>
+                            <option value="ENCONTRADO">🟡 ENCONTRADO (Tengo una mascota rescatada)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Especie / Tipo *</label>
+                        <select id="inputType" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-rose-500 focus:outline-none font-medium">
+                            <option value="Perro">🐶 Perro</option>
+                            <option value="Gato">🐱 Gato</option>
+                            <option value="Otro">🐾 Otro (Ave, Conejo, etc.)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Pet Name & Breed/Features -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Nombre de la Mascota *</label>
+                        <input type="text" id="inputPetName" required placeholder="Ej: Lucas, Pelusa, Sin Nombre..." class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-rose-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Raza / Color principal</label>
+                        <input type="text" id="inputBreed" placeholder="Ej: Criollo café, Labrador dorado, etc." class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-rose-500 focus:outline-none">
+                    </div>
+                </div>
+
+                <!-- MANDATORY OWNER DETAILS -->
+                <div class="bg-rose-50/70 p-4 rounded-2xl border border-rose-200 space-y-4">
+                    <div class="text-xs font-extrabold text-rose-800 uppercase tracking-wider flex items-center gap-1.5">
+                        <i class="fa-solid fa-address-card text-rose-600"></i> Datos Obligatorios de Contacto y Ubicación
+                    </div>
+
+                    <!-- Owner Full Name -->
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-800 mb-1">Nombre Completo del Dueño / Responsable *</label>
+                        <input type="text" id="inputOwnerName" required placeholder="Ej: Carlos Alberto Restrepo Gómez" class="w-full bg-white border border-rose-300 rounded-xl px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-rose-500 focus:outline-none font-medium">
+                    </div>
+
+                    <!-- Phone / Whatsapp & Neighborhood -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-800 mb-1">Número de Celular *</label>
+                            <input type="tel" id="inputPhone" required placeholder="Ej: 312 845 6789" class="w-full bg-white border border-rose-300 rounded-xl px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-rose-500 focus:outline-none font-bold text-slate-900">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-800 mb-1">Barrio en La Virginia *</label>
+                            <select id="inputNeighborhood" required class="w-full bg-white border border-rose-300 rounded-xl px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-rose-500 focus:outline-none font-medium">
+                                <option value="">Selecciona el barrio...</option>
+                                <option value="Alfonso López">Alfonso López</option>
+                                <option value="Bairon Gaviria">Bairon Gaviria</option>
+                                <option value="Balsillas">Balsillas</option>
+                                <option value="Bavaria">Bavaria</option>
+                                <option value="Buenos Aires">Buenos Aires</option>
+                                <option value="El Ciprés">El Ciprés</option>
+                                <option value="El Edén">El Edén</option>
+                                <option value="El Jardín">El Jardín</option>
+                                <option value="El Prado">El Prado</option>
+                                <option value="El Progreso">El Progreso</option>
+                                <option value="Expansión Norte">Expansión Norte</option>
+                                <option value="La Magdalena">La Magdalena</option>
+                                <option value="La Milagrosa">La Milagrosa</option>
+                                <option value="La Playa">La Playa</option>
+                                <option value="Las Américas">Las Américas</option>
+                                <option value="Los Almendros">Los Almendros</option>
+                                <option value="Los Gavilanes">Los Gavilanes</option>
+                                <option value="Los Libertadores">Los Libertadores</option>
+                                <option value="Luis Carlos Galán">Luis Carlos Galán</option>
+                                <option value="Obrero">Obrero</option>
+                                <option value="Pedro Pablo Bello">Pedro Pablo Bello</option>
+                                <option value="Pío XII">Pío XII</option>
+                                <option value="Portobelo">Portobelo</option>
+                                <option value="Restrepo">Restrepo</option>
+                                <option value="San Antonio">San Antonio</option>
+                                <option value="San Carlos">San Carlos</option>
+                                <option value="San Cayetano">San Cayetano</option>
+                                <option value="San Fernando">San Fernando</option>
+                                <option value="Santa Fe">Santa Fe</option>
+                                <option value="Siete de Enero">Siete de Enero</option>
+                                <option value="Sigifredo Zuleta">Sigifredo Zuleta</option>
+                                <option value="Tangarife I">Tangarife I</option>
+                                <option value="Tangarife II">Tangarife II</option>
+                                <option value="Zona Central">Zona Central / Centro</option>
+                                <option value="Otro Barrio">Otro sector / Vereda</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Exact Address -->
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-800 mb-1">Dirección Exacta o Punto de Referencia *</label>
+                        <input type="text" id="inputAddress" required placeholder="Ej: Calle 9 # 7-42 frente a la cancha" class="w-full bg-white border border-rose-300 rounded-xl px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-rose-500 focus:outline-none">
+                    </div>
+                </div>
+
+                <!-- Description & Señas Particulares -->
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Descripción / Señas particulares</label>
+                    <textarea id="inputDescription" rows="2" placeholder="Llevaba collar rojo, mancha negra en el ojo derecho, le asustan los ruidos fuertes..." class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-rose-500 focus:outline-none"></textarea>
+                </div>
+
+                <!-- Image Upload -->
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Foto de la Mascota *</label>
+                    <div class="flex items-center gap-3">
+                        <input type="file" id="inputImageFile" accept="image/*" onchange="previewSelectedImage(event)" class="hidden">
+                        <label for="inputImageFile" class="cursor-pointer bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-700 px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 transition-colors">
+                            <i class="fa-solid fa-camera text-rose-600"></i>
+                            <span>Cargar Foto</span>
+                        </label>
+                        <span id="fileNameLabel" class="text-xs text-slate-500 font-medium truncate max-w-[200px]">Ninguna imagen seleccionada</span>
+                    </div>
+                    <div id="imagePreviewContainer" class="mt-3 hidden">
+                        <img id="imagePreview" src="" alt="Vista previa" class="w-28 h-28 object-cover rounded-2xl border-2 border-rose-400 shadow-sm">
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="pt-2 flex items-center justify-end gap-3">
+                    <button type="button" onclick="closeFormModal()" class="px-5 py-2.5 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-100 transition-colors">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="bg-rose-600 hover:bg-rose-700 text-white font-extrabold px-6 py-2.5 rounded-xl shadow-lg shadow-rose-600/30 transition-all transform hover:-translate-y-0.5">
+                        <i class="fa-solid fa-paper-plane mr-1.5"></i> Publicar Registro
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Generador de Afiche para Imprimir / Compartir -->
+    <div id="flyerModal" class="fixed inset-0 z-50 hidden modal-backdrop overflow-y-auto p-4 flex items-center justify-center">
+        <div class="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl relative my-8 border border-slate-100">
+            <button onclick="closeFlyerModal()" class="absolute right-5 top-5 text-slate-400 hover:text-slate-600 w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center transition-colors">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <!-- Printable Area -->
+            <div id="printableFlyer" class="bg-white p-6 rounded-2xl border-4 border-rose-600 text-slate-900 space-y-4">
+                <div class="text-center border-b-2 border-rose-600 pb-3">
+                    <span id="flyerStatusBadge" class="bg-rose-600 text-white font-black text-2xl uppercase tracking-widest px-4 py-1 rounded-md inline-block">
+                        ¡SE BUSCA!
+                    </span>
+                    <h2 class="text-xl font-black mt-2 text-slate-900 uppercase">Red de Reencuentro La Virginia</h2>
+                </div>
+
+                <div class="flex justify-center">
+                    <img id="flyerImage" src="" alt="Foto Mascota" class="w-56 h-56 object-cover rounded-2xl border-2 border-slate-300 shadow-md">
+                </div>
+
+                <div class="text-center space-y-1">
+                    <div class="text-3xl font-black text-slate-900 uppercase" id="flyerPetName">MAX</div>
+                    <div class="text-sm font-bold text-slate-600" id="flyerBreed">Criollo café / Perro</div>
+                </div>
+
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-sm space-y-2">
+                    <div><span class="font-bold text-slate-900">Dueño / Responsable:</span> <span id="flyerOwnerName" class="font-semibold text-slate-800"></span></div>
+                    <div><span class="font-bold text-slate-900">Teléfono Celular:</span> <span id="flyerPhone" class="font-bold text-rose-600 text-base"></span></div>
+                    <div><span class="font-bold text-slate-900">Barrio:</span> <span id="flyerNeighborhood" class="font-semibold text-slate-800"></span></div>
+                    <div><span class="font-bold text-slate-900">Dirección Exacta:</span> <span id="flyerAddress" class="font-semibold text-slate-800"></span></div>
+                    <div id="flyerDescContainer" class="pt-1 text-slate-700 italic border-t border-slate-200 mt-2"><span id="flyerDescription"></span></div>
+                </div>
+
+                <div class="text-center text-xs font-bold text-slate-500 uppercase tracking-wider">
+                    S.O.S Terremoto La Virginia - Risaralda
+                </div>
+            </div>
+
+            <!-- Modal Action Controls -->
+            <div class="mt-6 flex flex-wrap gap-3 justify-end">
+                <a id="flyerMapBtn" href="#" target="_blank" rel="noopener noreferrer" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2.5 rounded-xl text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-map-location-dot"></i> Abrir Google Maps
+                </a>
+                <button onclick="window.print()" class="bg-slate-900 hover:bg-slate-800 text-white font-bold px-4 py-2.5 rounded-xl text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-print"></i> Imprimir Afiche
+                </button>
+                <button onclick="shareOnWhatsApp()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2.5 rounded-xl text-sm flex items-center gap-2">
+                    <i class="fa-brands fa-whatsapp text-lg"></i> Difundir en WhatsApp
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Visor de Google Maps -->
+    <div id="mapModal" class="fixed inset-0 z-50 hidden modal-backdrop overflow-y-auto p-4 flex items-center justify-center">
+        <div class="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl relative my-8 border border-slate-100">
+            <button onclick="closeMapModal()" class="absolute right-5 top-5 text-slate-400 hover:text-slate-600 w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center transition-colors">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <div class="mb-4">
+                <div class="inline-flex items-center gap-2 text-blue-600 text-xs font-bold uppercase tracking-wider bg-blue-50 px-3 py-1 rounded-full mb-2">
+                    <i class="fa-solid fa-map-pin"></i> Ubicación GPS La Virginia
+                </div>
+                <h2 id="mapModalTitle" class="text-2xl font-black text-slate-900">Ubicación de la Mascota</h2>
+                <p id="mapModalAddress" class="text-slate-600 text-sm font-medium mt-1"></p>
+            </div>
+
+            <!-- Embedded Map Frame -->
+            <div class="relative w-full h-80 bg-slate-100 rounded-2xl overflow-hidden border border-slate-200 shadow-inner">
+                <iframe id="mapIframe" src="" class="w-full h-full border-0" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+
+            <div class="mt-5 flex flex-wrap items-center justify-between gap-3">
+                <div class="text-xs text-slate-500 font-medium">
+                    <i class="fa-solid fa-circle-info text-blue-500 mr-1"></i> Pulsa abajo para iniciar la navegación GPS en Google Maps.
+                </div>
+                <div class="flex gap-2 w-full sm:w-auto">
+                    <button onclick="closeMapModal()" class="px-4 py-2.5 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-100 transition-colors">
+                        Cerrar
+                    </button>
+                    <a id="mapExternalLink" href="#" target="_blank" rel="noopener noreferrer" class="bg-blue-600 hover:bg-blue-700 text-white font-extrabold px-5 py-2.5 rounded-xl text-sm flex items-center justify-center gap-2 shadow-lg shadow-blue-600/30 transition-all">
+                        <i class="fa-solid fa-diamond-turn-right text-base"></i> Cómo Llegar (GPS)
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Ingreso de Administrador -->
+    <div id="adminModal" class="fixed inset-0 z-50 hidden modal-backdrop overflow-y-auto p-4 flex items-center justify-center">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl relative border border-slate-100">
+            <button onclick="closeAdminModal()" class="absolute right-5 top-5 text-slate-400 hover:text-slate-600 w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center transition-colors">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <div class="mb-6 text-center">
+                <div class="w-14 h-14 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center mx-auto mb-3 text-2xl shadow-inner">
+                    <i class="fa-solid fa-user-lock"></i>
+                </div>
+                <h2 class="text-2xl font-black text-slate-900">Panel Administrador</h2>
+                <p class="text-slate-500 text-xs mt-1">Ingresa tus credenciales para gestionar publicaciones y cambiar estados.</p>
+            </div>
+
+            <form onsubmit="handleAdminLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Usuario Administrator *</label>
+                    <input type="text" id="adminUser" required placeholder="admin" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Contraseña *</label>
+                    <input type="password" id="adminPass" required placeholder="••••••••" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                </div>
+
+                <div id="adminErrorMsg" class="hidden text-xs text-rose-600 font-bold bg-rose-50 p-2.5 rounded-xl border border-rose-200 text-center">
+                    Usuario o contraseña incorrectos.
+                </div>
+
+                <div class="text-xs text-slate-400 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                    <span class="font-bold text-slate-600">Nota demo:</span> Usar usuario: <code class="bg-slate-200 px-1 rounded text-slate-800">admin</code> y clave: <code class="bg-slate-200 px-1 rounded text-slate-800">lavirginia2026</code>
+                </div>
+
+                <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-xl shadow-lg transition-all text-sm flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-key"></i> Iniciar Sesión Administrador
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Publicar Solución / Reencuentro con la Familia -->
+    <div id="solutionModal" class="fixed inset-0 z-50 hidden modal-backdrop overflow-y-auto p-4 flex items-center justify-center">
+        <div class="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl relative my-8 border border-emerald-100">
+            <button onclick="closeSolutionModal()" class="absolute right-5 top-5 text-slate-400 hover:text-slate-600 w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center transition-colors">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <div class="mb-6">
+                <div class="inline-flex items-center gap-2 text-emerald-700 text-xs font-bold uppercase tracking-wider bg-emerald-50 px-3 py-1 rounded-full mb-2">
+                    <i class="fa-solid fa-heart-circle-check"></i> ¡Noticia Feliz! Solución y Reencuentro
+                </div>
+                <h2 class="text-2xl font-black text-slate-900">Publicar Reencuentro Exitoso</h2>
+                <p class="text-slate-500 text-sm mt-1">Registra los datos y la foto de prueba de que la mascota ya está a salvo con su familia.</p>
+            </div>
+
+            <form onsubmit="handleSolutionSubmit(event)" class="space-y-4">
+                <input type="hidden" id="solutionPetId">
+
+                <!-- Helper Full Name -->
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-800 mb-1">Nombre Completo de quien Ayudó / Rescató *</label>
+                    <input type="text" id="inputHelperName" required placeholder="Ej: Dra. Andrea Castro / Vecino Carlos" class="w-full bg-slate-50 border border-emerald-300 rounded-xl px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none font-medium">
+                </div>
+
+                <!-- Helper Phone Number -->
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-800 mb-1">Número de Celular de quien Ayudó *</label>
+                    <input type="tel" id="inputHelperPhone" required placeholder="Ej: 311 555 4321" class="w-full bg-slate-50 border border-emerald-300 rounded-xl px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none font-bold">
+                </div>
+
+                <!-- Reunion Photo Upload -->
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-800 mb-1">Foto del Reencuentro con su Familia *</label>
+                    <div class="flex items-center gap-3">
+                        <input type="file" id="inputSolutionImageFile" accept="image/*" onchange="previewSolutionImage(event)" class="hidden" required>
+                        <label for="inputSolutionImageFile" class="cursor-pointer bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-800 px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 transition-colors">
+                            <i class="fa-solid fa-camera text-emerald-600 text-lg"></i>
+                            <span>Cargar Foto de Prueba</span>
+                        </label>
+                        <span id="solutionFileNameLabel" class="text-xs text-slate-500 font-medium truncate max-w-[200px]">Ninguna imagen seleccionada</span>
+                    </div>
+                    <div id="solutionPreviewContainer" class="mt-3 hidden">
+                        <img id="solutionPreview" src="" alt="Vista previa reencuentro" class="w-32 h-32 object-cover rounded-2xl border-2 border-emerald-500 shadow-md">
+                    </div>
+                </div>
+
+                <!-- Optional Testimonial / Details -->
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Comentario o Agradecimiento (Opcional)</label>
+                    <textarea id="inputSolutionDetails" rows="2" placeholder="Fue encontrado cerca al parque central de La Virginia y entregado sano y salvo." class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none"></textarea>
+                </div>
+
+                <div class="pt-2 flex items-center justify-end gap-3">
+                    <button type="button" onclick="closeSolutionModal()" class="px-5 py-2.5 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-100 transition-colors">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold px-6 py-2.5 rounded-xl shadow-lg shadow-emerald-600/30 transition-all transform hover:-translate-y-0.5 flex items-center gap-2">
+                        <i class="fa-solid fa-heart"></i> Confirmar Reencuentro
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-8 border-t border-slate-800 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-3">
+            <div class="flex items-center justify-center gap-2 text-slate-200 font-bold text-base">
+                <i class="fa-solid fa-paw text-rose-500"></i> Mascotas Perdidas La Virginia
+            </div>
+            <p class="text-xs max-w-xl mx-auto text-slate-400">
+                Plataforma comunitaria de respuesta rápida ante situaciones de desastre en el Municipio de La Virginia, Risaralda.
+            </p>
+            <div class="text-xs text-slate-500 font-medium">
+                © 2026 La Virginia Solidaria. Todos los derechos reservados.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Sample Initial Data for La Virginia, Risaralda
+        let petsData = [
+            {
+                id: 'lv-001',
+                status: 'PERDIDO',
+                type: 'Perro',
+                petName: 'Lucas',
+                breed: 'Golden Retriever / Criollo',
+                ownerName: 'María Fernanda Jaramillo',
+                phone: '314 789 1234',
+                neighborhood: 'San Cayetano',
+                address: 'Carrera 8 # 12-34 cerca a la panadería',
+                description: 'Se asustó durante el temblor y corrió hacia la vía principal. Lleva un collar azul con placa.',
+                image: 'https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=600&q=80',
+                date: 'Hace 3 horas'
+            },
+            {
+                id: 'lv-002',
+                status: 'ENCONTRADO',
+                type: 'Gato',
+                petName: 'Sin Nombre (Busca a su dueño)',
+                breed: 'Gato Siamés mezclado',
+                ownerName: 'Jorge Eliécer Morales',
+                phone: '310 456 7890',
+                neighborhood: 'Alfonso López',
+                address: 'Calle 10 # 5-18 en el patio de mi casa',
+                description: 'Apareció en el techo resguardándose. Es muy manso y está asustado. Tiene los ojos azules.',
+                image: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=600&q=80',
+                date: 'Hace 5 horas'
+            },
+            {
+                id: 'lv-003',
+                status: 'PERDIDO',
+                type: 'Perro',
+                petName: 'Sasha',
+                breed: 'Pincher Negro con Fuego',
+                ownerName: 'Gloria Inés Montoya',
+                phone: '320 654 3210',
+                neighborhood: 'Restrepo',
+                address: 'Manzana B Casa 14 Barrio Restrepo',
+                description: 'Perrita pequeña viejita, necesita medicamentos diarios. Cojea un poco de la pata trasera.',
+                image: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=600&q=80',
+                date: 'Hace 1 día'
+            },
+            {
+                id: 'lv-004',
+                status: 'REUNIDO',
+                type: 'Gato',
+                petName: 'Michi',
+                breed: 'Gato Angora Blanco',
+                ownerName: 'Andrés Felipe Cardona',
+                phone: '312 999 8877',
+                neighborhood: 'Zona Central',
+                address: 'Calle 7 # 6-12',
+                description: '¡Reunido con su familia! Gracias a los vecinos del centro que avisaron por la plataforma.',
+                image: 'https://images.unsplash.com/photo-1573865526739-10659fec78a5?auto=format&fit=crop&w=600&q=80',
+                helperName: 'Camila Ospina (Rescatista)',
+                helperPhone: '315 888 2211',
+                reunionImage: 'https://images.unsplash.com/photo-1573865526739-10659fec78a5?auto=format&fit=crop&w=600&q=80',
+                helperDetails: 'Entregado felizmente en la plaza principal.',
+                date: 'Hace 1 día'
+            }
+        ];
+
+        let selectedImageBase64 = '';
+        let selectedSolutionImageBase64 = '';
+        let activeFlyerPet = null;
+        let isAdminLoggedIn = false;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedData = localStorage.getItem('la_virginia_pets_data');
+            if (savedData) {
+                try {
+                    petsData = JSON.parse(savedData);
+                } catch(e) {
+                    console.error('Error parsing saved pets', e);
+                }
+            }
+            // Check Admin session
+            isAdminLoggedIn = sessionStorage.getItem('admin_logged_in') === 'true';
+            updateAdminUI();
+            renderPetsGrid(petsData);
+            updateStats();
+        });
+
+        function saveState() {
+            localStorage.setItem('la_virginia_pets_data', JSON.stringify(petsData));
+            updateStats();
+        }
+
+        function updateStats() {
+            const perdidos = petsData.filter(p => p.status === 'PERDIDO').length;
+            const encontrados = petsData.filter(p => p.status === 'ENCONTRADO').length;
+            const reunidos = petsData.filter(p => p.status === 'REUNIDO').length;
+
+            document.getElementById('statPerdidos').innerText = perdidos;
+            document.getElementById('statEncontrados').innerText = encontrados;
+            document.getElementById('statReunidos').innerText = reunidos;
+        }
+
+        function renderPetsGrid(list) {
+            const grid = document.getElementById('petsGrid');
+            const emptyState = document.getElementById('emptyState');
+
+            grid.innerHTML = '';
+
+            if (list.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            } else {
+                emptyState.classList.add('hidden');
+            }
+
+            list.forEach(pet => {
+                const cleanPhone = pet.phone.replace(/\D/g, '');
+                const queryLocation = `${pet.address}, Barrio ${pet.neighborhood}, La Virginia, Risaralda, Colombia`;
+                const mapsSearchUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(queryLocation)}`;
+                const mapsDirUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(queryLocation)}`;
+
+                const whatsappUrl = `https://wa.me/57${cleanPhone}?text=Hola%20${encodeURIComponent(pet.ownerName)},%20te%20contacto%20desde%20la%20plataforma%20Mascotas%20La%20Virginia%20sobre%20la%20mascota%20${encodeURIComponent(pet.petName)}`;
+
+                // Badge styling
+                let statusBadge = '';
+                if (pet.status === 'PERDIDO') {
+                    statusBadge = `<span class="bg-red-600 text-white font-extrabold text-xs px-3 py-1 rounded-full uppercase tracking-wider badge-pulse flex items-center gap-1.5"><i class="fa-solid fa-circle text-[8px]"></i> Busca su Hogar</span>`;
+                } else if (pet.status === 'ENCONTRADO') {
+                    statusBadge = `<span class="bg-amber-500 text-slate-950 font-extrabold text-xs px-3 py-1 rounded-full uppercase tracking-wider flex items-center gap-1.5"><i class="fa-solid fa-hand-holding-heart"></i> En Rescate / Custodia</span>`;
+                } else {
+                    statusBadge = `<span class="bg-emerald-600 text-white font-extrabold text-xs px-3 py-1 rounded-full uppercase tracking-wider flex items-center gap-1.5"><i class="fa-solid fa-heart"></i> ¡Reunido con Familia!</span>`;
+                }
+
+                // Admin Controls Section
+                const adminControlsHTML = isAdminLoggedIn ? `
+                    <div class="bg-amber-50 border-t border-b border-amber-200 p-2 px-3 flex items-center justify-between gap-2 text-xs font-bold text-amber-900">
+                        <span class="flex items-center gap-1"><i class="fa-solid fa-user-shield text-amber-600"></i> Admin:</span>
+                        <div class="flex items-center gap-2">
+                            <select onchange="adminChangeStatus('${pet.id}', this.value)" class="bg-white border border-amber-300 rounded px-2 py-1 text-xs focus:outline-none">
+                                <option value="PERDIDO" ${pet.status === 'PERDIDO' ? 'selected' : ''}>🔴 Perdido</option>
+                                <option value="ENCONTRADO" ${pet.status === 'ENCONTRADO' ? 'selected' : ''}>🟡 Encontrado</option>
+                                <option value="REUNIDO" ${pet.status === 'REUNIDO' ? 'selected' : ''}>🟢 Reunido</option>
+                            </select>
+                            <button onclick="adminDeletePet('${pet.id}')" title="Eliminar registro" class="bg-rose-600 hover:bg-rose-700 text-white px-2 py-1 rounded transition-colors">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
+                    </div>
+                ` : '';
+
+                // Reunion / Helper Info Box for Reunited Pets
+                const helperBoxHTML = (pet.status === 'REUNIDO' && (pet.helperName || pet.reunionImage)) ? `
+                    <div class="bg-emerald-50 border border-emerald-200 p-3 rounded-2xl space-y-2">
+                        <div class="text-xs font-extrabold text-emerald-800 uppercase tracking-wider flex items-center gap-1">
+                            <i class="fa-solid fa-medal text-emerald-600"></i> Datos del Reencuentro / Ayudante
+                        </div>
+                        ${pet.reunionImage ? `
+                            <div class="relative h-32 rounded-xl overflow-hidden border border-emerald-300">
+                                <img src="${pet.reunionImage}" class="w-full h-full object-cover">
+                                <span class="absolute bottom-1 right-1 bg-emerald-700/80 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-0.5 rounded">Foto de Prueba</span>
+                            </div>
+                        ` : ''}
+                        ${pet.helperName ? `
+                            <div class="text-xs space-y-1">
+                                <div><span class="text-slate-500 font-semibold">Ayudó / Rescató:</span> <strong class="text-slate-900">${pet.helperName}</strong></div>
+                                <div><span class="text-slate-500 font-semibold">Celular Ayudante:</span> <strong class="text-emerald-700 font-extrabold">${pet.helperPhone}</strong></div>
+                            </div>
+                        ` : ''}
+                    </div>
+                ` : '';
+
+                const cardHTML = `
+                    <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm hover:shadow-md transition-all overflow-hidden flex flex-col justify-between">
+                        <div>
+                            <!-- Image Header -->
+                            <div class="relative h-56 bg-slate-100 overflow-hidden">
+                                <img src="${pet.image}" alt="${pet.petName}" class="w-full h-full object-cover">
+                                <div class="absolute top-3 left-3">
+                                    ${statusBadge}
+                                </div>
+                                <div class="absolute bottom-3 right-3 bg-slate-900/80 backdrop-blur-md text-white text-xs font-bold px-2.5 py-1 rounded-lg">
+                                    <i class="fa-solid fa-location-dot text-rose-400 mr-1"></i>${pet.neighborhood}
+                                </div>
+                            </div>
+
+                            ${adminControlsHTML}
+
+                            <!-- Content -->
+                            <div class="p-5 space-y-3">
+                                <div>
+                                    <div class="flex items-center justify-between gap-2">
+                                        <h3 class="text-xl font-extrabold text-slate-900 leading-snug">${pet.petName}</h3>
+                                        <span class="text-xs font-bold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-md">${pet.type}</span>
+                                    </div>
+                                    <p class="text-xs font-semibold text-slate-500 mt-0.5">${pet.breed || 'Sin raza especificada'}</p>
+                                </div>
+
+                                <!-- Owner Info Box (MANDATORY FIELDS VISIBLE) -->
+                                <div class="bg-slate-50 rounded-2xl p-3.5 border border-slate-200/70 text-xs space-y-2">
+                                    <div class="flex items-start gap-2">
+                                        <i class="fa-solid fa-user text-rose-500 mt-0.5 shrink-0"></i>
+                                        <div>
+                                            <span class="text-slate-400 font-medium block">Dueño / Responsable:</span>
+                                            <span class="font-bold text-slate-900 text-sm">${pet.ownerName}</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex items-start gap-2">
+                                        <i class="fa-solid fa-phone text-rose-500 mt-0.5 shrink-0"></i>
+                                        <div>
+                                            <span class="text-slate-400 font-medium block">Número Celular:</span>
+                                            <span class="font-extrabold text-slate-900 text-sm tracking-wide">${pet.phone}</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex items-start justify-between gap-2 pt-1 border-t border-slate-200/60">
+                                        <div class="flex items-start gap-2">
+                                            <i class="fa-solid fa-map-pin text-rose-500 mt-0.5 shrink-0"></i>
+                                            <div>
+                                                <span class="text-slate-400 font-medium block">Dirección en La Virginia:</span>
+                                                <span class="font-semibold text-slate-800">${pet.address}</span>
+                                            </div>
+                                        </div>
+                                        <button onclick="openMapModal('${pet.id}')" class="shrink-0 bg-blue-50 hover:bg-blue-100 text-blue-700 px-2.5 py-1.5 rounded-xl font-bold text-[11px] flex items-center gap-1 border border-blue-200 transition-colors" title="Ver en Google Maps">
+                                            <i class="fa-solid fa-map-location-dot text-blue-600"></i>
+                                            <span>Ver Mapa</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                ${helperBoxHTML}
+
+                                ${pet.description ? `
+                                    <p class="text-xs text-slate-600 line-clamp-2 italic">
+                                        "${pet.description}"
+                                    </p>
+                                ` : ''}
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="p-5 pt-0 space-y-2">
+                            <div class="grid grid-cols-2 gap-2">
+                                <a href="${whatsappUrl}" target="_blank" rel="noopener noreferrer" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm">
+                                    <i class="fa-brands fa-whatsapp text-sm"></i> WhatsApp
+                                </a>
+                                <a href="${mapsDirUrl}" target="_blank" rel="noopener noreferrer" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm">
+                                    <i class="fa-solid fa-diamond-turn-right text-xs"></i> Cómo Llegar
+                                </a>
+                            </div>
+
+                            <div class="flex gap-2">
+                                <button onclick="openFlyerModal('${pet.id}')" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-colors">
+                                    <i class="fa-solid fa-file-pdf text-rose-500"></i> Afiche / Compartir
+                                </button>
+                                ${pet.status !== 'REUNIDO' ? `
+                                    <button onclick="openSolutionModal('${pet.id}')" title="Marcar solución: Ya está con su familia" class="bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-bold px-3 py-2 rounded-xl text-xs transition-colors shrink-0 flex items-center gap-1">
+                                        <i class="fa-solid fa-heart text-rose-600"></i>
+                                        <span>¡Ya con su familia!</span>
+                                    </button>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                grid.innerHTML += cardHTML;
+            });
+        }
+
+        // --- GOOGLE MAPS MODAL FUNCTIONS ---
+        function openMapModal(id) {
+            const pet = petsData.find(p => p.id === id);
+            if (!pet) return;
+
+            const fullAddress = `${pet.address}, Barrio ${pet.neighborhood}, La Virginia, Risaralda, Colombia`;
+            
+            document.getElementById('mapModalTitle').innerText = `Ubicación de ${pet.petName}`;
+            document.getElementById('mapModalAddress').innerHTML = `<i class="fa-solid fa-location-dot text-rose-500 mr-1"></i> <strong>${pet.address}</strong> (${pet.neighborhood}, La Virginia)`;
+
+            // Embed Google Maps iframe URL
+            const embedUrl = `https://maps.google.com/maps?q=${encodeURIComponent(fullAddress)}&t=&z=16&ie=UTF8&iwloc=&output=embed`;
+            document.getElementById('mapIframe').src = embedUrl;
+
+            // Direct GPS directions link
+            const dirUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(fullAddress)}`;
+            document.getElementById('mapExternalLink').href = dirUrl;
+
+            document.getElementById('mapModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMapModal() {
+            document.getElementById('mapModal').classList.add('hidden');
+            document.getElementById('mapIframe').src = '';
+            document.body.style.overflow = 'auto';
+        }
+
+        // --- ADMIN LOGIN & MANAGEMENT FUNCTIONS ---
+        function openAdminModal() {
+            document.getElementById('adminModal').classList.remove('hidden');
+            document.getElementById('adminErrorMsg').classList.add('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeAdminModal() {
+            document.getElementById('adminModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            const user = document.getElementById('adminUser').value.trim();
+            const pass = document.getElementById('adminPass').value.trim();
+
+            if (user === 'admin' && pass === 'lavirginia2026') {
+                isAdminLoggedIn = true;
+                sessionStorage.setItem('admin_logged_in', 'true');
+                updateAdminUI();
+                closeAdminModal();
+                renderPetsGrid(petsData);
+            } else {
+                document.getElementById('adminErrorMsg').classList.remove('hidden');
+            }
+        }
+
+        function adminLogout() {
+            isAdminLoggedIn = false;
+            sessionStorage.removeItem('admin_logged_in');
+            updateAdminUI();
+            renderPetsGrid(petsData);
+        }
+
+        function updateAdminUI() {
+            const container = document.getElementById('adminHeaderBtnContainer');
+            if (isAdminLoggedIn) {
+                container.innerHTML = `
+                    <div class="flex items-center gap-2 bg-amber-400/20 border border-amber-300/50 rounded-xl px-3 py-1.5 text-xs font-bold text-amber-200">
+                        <span class="flex items-center gap-1"><i class="fa-solid fa-user-check text-amber-300"></i> Admin Activo</span>
+                        <button onclick="adminLogout()" class="bg-rose-600 hover:bg-rose-700 text-white px-2 py-1 rounded-lg transition-colors ml-1">
+                            Salir
+                        </button>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `
+                    <button onclick="openAdminModal()" class="bg-slate-900/60 hover:bg-slate-900 text-white font-bold px-3 py-2 rounded-xl text-xs flex items-center gap-1.5 backdrop-blur-sm border border-white/20 transition-all">
+                        <i class="fa-solid fa-user-shield text-amber-400"></i>
+                        <span>Acceso Admin</span>
+                    </button>
+                `;
+            }
+        }
+
+        function adminChangeStatus(id, newStatus) {
+            const pet = petsData.find(p => p.id === id);
+            if (pet) {
+                pet.status = newStatus;
+                saveState();
+                renderPetsGrid(petsData);
+            }
+        }
+
+        function adminDeletePet(id) {
+            if (confirm('¿Estás seguro de eliminar este registro permanentemente?')) {
+                petsData = petsData.filter(p => p.id !== id);
+                saveState();
+                renderPetsGrid(petsData);
+            }
+        }
+
+        // --- REUNION / SOLUTION MODAL FUNCTIONS ---
+        function openSolutionModal(id) {
+            const pet = petsData.find(p => p.id === id);
+            if (!pet) return;
+
+            document.getElementById('solutionPetId').value = id;
+            document.getElementById('inputHelperName').value = '';
+            document.getElementById('inputHelperPhone').value = '';
+            document.getElementById('inputSolutionDetails').value = '';
+            document.getElementById('solutionPreviewContainer').classList.add('hidden');
+            document.getElementById('solutionFileNameLabel').innerText = 'Ninguna imagen seleccionada';
+            selectedSolutionImageBase64 = '';
+
+            document.getElementById('solutionModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSolutionModal() {
+            document.getElementById('solutionModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        function previewSolutionImage(event) {
+            const file = event.target.files[0];
+            const label = document.getElementById('solutionFileNameLabel');
+            const preview = document.getElementById('solutionPreview');
+            const container = document.getElementById('solutionPreviewContainer');
+
+            if (file) {
+                label.innerText = file.name;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    selectedSolutionImageBase64 = e.target.result;
+                    preview.src = selectedSolutionImageBase64;
+                    container.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            } else {
+                label.innerText = 'Ninguna imagen seleccionada';
+                container.classList.add('hidden');
+                selectedSolutionImageBase64 = '';
+            }
+        }
+
+        function handleSolutionSubmit(e) {
+            e.preventDefault();
+
+            const petId = document.getElementById('solutionPetId').value;
+            const helperName = document.getElementById('inputHelperName').value.trim();
+            const helperPhone = document.getElementById('inputHelperPhone').value.trim();
+            const helperDetails = document.getElementById('inputSolutionDetails').value.trim();
+
+            if (!helperName || !helperPhone || !selectedSolutionImageBase64) {
+                alert('Por favor completa todos los campos requeridos, incluyendo la foto de prueba del reencuentro.');
+                return;
+            }
+
+            const pet = petsData.find(p => p.id === petId);
+            if (pet) {
+                pet.status = 'REUNIDO';
+                pet.helperName = helperName;
+                pet.helperPhone = helperPhone;
+                pet.reunionImage = selectedSolutionImageBase64;
+                pet.helperDetails = helperDetails;
+
+                saveState();
+                renderPetsGrid(petsData);
+                closeSolutionModal();
+            }
+        }
+
+        function filterPets() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const statusVal = document.getElementById('statusFilter').value;
+            const typeVal = document.getElementById('typeFilter').value;
+            const neighborhoodVal = document.getElementById('neighborhoodFilter').value;
+
+            const filtered = petsData.filter(pet => {
+                const matchesQuery = 
+                    pet.petName.toLowerCase().includes(query) ||
+                    pet.ownerName.toLowerCase().includes(query) ||
+                    pet.address.toLowerCase().includes(query) ||
+                    pet.neighborhood.toLowerCase().includes(query) ||
+                    (pet.description && pet.description.toLowerCase().includes(query));
+
+                const matchesStatus = (statusVal === 'ALL') || (pet.status === statusVal);
+                const matchesType = (typeVal === 'ALL') || (pet.type === typeVal);
+                const matchesNeighborhood = (neighborhoodVal === 'ALL') || (pet.neighborhood === neighborhoodVal);
+
+                return matchesQuery && matchesStatus && matchesType && matchesNeighborhood;
+            });
+
+            renderPetsGrid(filtered);
+        }
+
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('statusFilter').value = 'ALL';
+            document.getElementById('typeFilter').value = 'ALL';
+            document.getElementById('neighborhoodFilter').value = 'ALL';
+            renderPetsGrid(petsData);
+        }
+
+        function previewSelectedImage(event) {
+            const file = event.target.files[0];
+            const label = document.getElementById('fileNameLabel');
+            const preview = document.getElementById('imagePreview');
+            const container = document.getElementById('imagePreviewContainer');
+
+            if (file) {
+                label.innerText = file.name;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    selectedImageBase64 = e.target.result;
+                    preview.src = selectedImageBase64;
+                    container.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            } else {
+                label.innerText = 'Ninguna imagen seleccionada';
+                container.classList.add('hidden');
+                selectedImageBase64 = '';
+            }
+        }
+
+        function openFormModal() {
+            document.getElementById('formModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeFormModal() {
+            document.getElementById('formModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+            document.getElementById('petForm').reset();
+            document.getElementById('imagePreviewContainer').classList.add('hidden');
+            document.getElementById('fileNameLabel').innerText = 'Ninguna imagen seleccionada';
+            selectedImageBase64 = '';
+        }
+
+        function handlePetSubmit(e) {
+            e.preventDefault();
+
+            const status = document.getElementById('inputStatus').value;
+            const type = document.getElementById('inputType').value;
+            const petName = document.getElementById('inputPetName').value.trim();
+            const breed = document.getElementById('inputBreed').value.trim();
+            const ownerName = document.getElementById('inputOwnerName').value.trim();
+            const phone = document.getElementById('inputPhone').value.trim();
+            const neighborhood = document.getElementById('inputNeighborhood').value;
+            const address = document.getElementById('inputAddress').value.trim();
+            const description = document.getElementById('inputDescription').value.trim();
+
+            if (!ownerName || !phone || !address || !neighborhood || !petName) {
+                alert('Por favor completa todos los campos obligatorios (*).');
+                return;
+            }
+
+            // Default image fallback if user didn't upload photo
+            const defaultPetImage = type === 'Gato' 
+                ? 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=600&q=80'
+                : 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=600&q=80';
+
+            const newPet = {
+                id: 'lv-' + Date.now(),
+                status,
+                type,
+                petName,
+                breed,
+                ownerName,
+                phone,
+                neighborhood,
+                address,
+                description,
+                image: selectedImageBase64 || defaultPetImage,
+                date: 'Recientemente'
+            };
+
+            petsData.unshift(newPet);
+            saveState();
+            renderPetsGrid(petsData);
+            closeFormModal();
+        }
+
+        function markAsReunited(id) {
+            const pet = petsData.find(p => p.id === id);
+            if (pet) {
+                pet.status = 'REUNIDO';
+                saveState();
+                renderPetsGrid(petsData);
+            }
+        }
+
+        function openFlyerModal(id) {
+            const pet = petsData.find(p => p.id === id);
+            if (!pet) return;
+
+            activeFlyerPet = pet;
+
+            const badge = document.getElementById('flyerStatusBadge');
+            if (pet.status === 'PERDIDO') {
+                badge.innerText = '¡SE BUSCA!';
+                badge.className = 'bg-rose-600 text-white font-black text-2xl uppercase tracking-widest px-4 py-1 rounded-md inline-block';
+            } else if (pet.status === 'ENCONTRADO') {
+                badge.innerText = '¡MASCOTA ENCONTRADA!';
+                badge.className = 'bg-amber-500 text-slate-950 font-black text-2xl uppercase tracking-widest px-4 py-1 rounded-md inline-block';
+            } else {
+                badge.innerText = '¡REUNIDO CON SU FAMILIA!';
+                badge.className = 'bg-emerald-600 text-white font-black text-2xl uppercase tracking-widest px-4 py-1 rounded-md inline-block';
+            }
+
+            document.getElementById('flyerPetName').innerText = pet.petName;
+            document.getElementById('flyerBreed').innerText = (pet.breed || '') + ' (' + pet.type + ')';
+            document.getElementById('flyerImage').src = pet.image;
+            document.getElementById('flyerOwnerName').innerText = pet.ownerName;
+            document.getElementById('flyerPhone').innerText = pet.phone;
+            document.getElementById('flyerNeighborhood').innerText = pet.neighborhood;
+            document.getElementById('flyerAddress').innerText = pet.address;
+
+            // Set Google Maps URL on Flyer modal button
+            const fullAddr = `${pet.address}, Barrio ${pet.neighborhood}, La Virginia, Risaralda, Colombia`;
+            document.getElementById('flyerMapBtn').href = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(fullAddr)}`;
+
+            if (pet.description) {
+                document.getElementById('flyerDescContainer').classList.remove('hidden');
+                document.getElementById('flyerDescription').innerText = '"' + pet.description + '"';
+            } else {
+                document.getElementById('flyerDescContainer').classList.add('hidden');
+            }
+
+            document.getElementById('flyerModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeFlyerModal() {
+            document.getElementById('flyerModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+            activeFlyerPet = null;
+        }
+
+        function shareOnWhatsApp() {
+            if (!activeFlyerPet) return;
+            const p = activeFlyerPet;
+            const mapLink = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(p.address + ', Barrio ' + p.neighborhood + ', La Virginia, Risaralda')}`;
+
+            const text = `🚨 *URGENTE - MASCOTA EN LA VIRGINIA* 🚨\n\n` +
+                         `📌 *Estado:* ${p.status}\n` +
+                         `🐶 *Nombre:* ${p.petName}\n` +
+                         `👤 *Dueño:* ${p.ownerName}\n` +
+                         `📞 *Celular:* ${p.phone}\n` +
+                         `📍 *Barrio:* ${p.neighborhood}\n` +
+                         `🏠 *Dirección:* ${p.address}\n` +
+                         `🗺️ *Google Maps GPS:* ${mapLink}\n\n` +
+                         `Por favor difunde para ayudar a reunir esta mascota con su hogar tras la emergencia.`;
+            
+            const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
+            window.open(url, '_blank');
+        }
+    </script>
+</body>
+</html>
